@@ -79,6 +79,7 @@ func main() {
 	ctx = handleShutdown(ctx, logger, dBHandler, srv, tracer)
 	go func() {
 		// service connections
+		logger.Infof("Listen and serve on port %d", config.Config.Server.Port)
 		if err = srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Fatalf("listen: %s\n", err)
 		}
