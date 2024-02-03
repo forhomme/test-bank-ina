@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/gin-contrib/cors"
-	"github.com/gin-contrib/secure"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
@@ -49,7 +48,6 @@ func main() {
 		ExposeHeaders: []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		AllowMethods:  []string{http.MethodGet, http.MethodHead, http.MethodPut, http.MethodPatch, http.MethodPost, http.MethodDelete, http.MethodOptions},
 	}))
-	route.Use(secure.New(secure.DefaultConfig()))
 
 	userApps := service.NewUserService(logger, dBHandler, tracer)
 	userServer := _interface.NewUserServer(tracer, userApps)
