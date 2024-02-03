@@ -1,0 +1,27 @@
+server:
+  port: 8080
+  cors: true
+  body_dump: true
+
+database:
+  host: localhost
+  db_name: bank_ina
+  user: app_user
+  password: superuser
+  max_connection: 300
+  max_idle: 300
+
+general:
+  secret_key: rahasia
+  token_duration: 1h
+  refresh_token_duration: 720h
+  current_language: en
+  uptrace_dsn: http://project2_secret_token@localhost:14318?grpc=14317
+  app_name: TestBankIna
+  app_version: v0.0.1
+
+application_message:
+  en:
+    invalid_status:
+      key: invalid_status
+      message: status input should pending, on progress, or done

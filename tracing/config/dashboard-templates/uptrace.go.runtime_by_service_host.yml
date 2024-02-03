@@ -1,0 +1,124 @@
+schema: v2
+name: 'Go: Runtime'
+
+table:
+  grid_items:
+    - title: Number of hosts
+      description: Number of host_name
+      type: gauge
+      metrics:
+        - process_runtime_go_goroutines as $goroutines
+      query:
+        - uniq($goroutines, host_name) as num_host
+      template: ${num_host} hosts
+
+    - title: Number of services
+      description: Number of service_name
+      type: gauge
+      metrics:
+        - process_runtime_go_goroutines as $goroutines
+      query:
+        - uniq($goroutines, service_name) as num_service
+      template: ${num_service} services
+
+    - title: Max GC pause
+      description: Max garbage collector pause
+      type: gauge
+      metrics:
+        - process_runtime_go_gc_pause_ns as $gc_pause
+      query:
+        - max($gc_pause) as max_gc_pause
+      columns:
+        max_gc_pause: { unit: nanoseconds }
+
+    - title: Total heap in use
+      description: Total heap memory in use
+      type: gauge
+      metrics:
+        - process_runtime_go_mem_heap_inuse as $mem_in_use
+      query:
+        - sum($mem_in_use) as mem_in_use
+      columns:
+        mem_in_use: { unit: bytes }
+
+    - title: Total heap objects
+      description: Total heap live objects
+      type: gauge
+      metrics:
+        - process_runtime_go_mem_heap_objects as $heap_objects
+      query:
+        - sum($heap_objects)
+
+  metrics:
+    - process_runtime_go_gc_pause_ns as $gc_pause
+    - process_runtime_go_mem_heap_inuse as $mem_in_use
+    - process_runtime_go_mem_heap_objects as $heap_objects
+    - process_runtime_go_goroutines as $goroutines
+  query:
+    - group by service_name
+    - group by host_name
+    - max($gc_pause) as max_gc_pause
+    - sum($mem_in_use)
+    - sum($heap_objects)
+    - sum($goroutines)
+  columns:
+    max_gc_pause: { unit: nanoseconds }
+
+grid_rows:
+  - title: General
+    items:
+      - title: Max GC stop-the-world pause
+        metrics:
+          - process_runtime_go_gc_pause_ns as $gc_pause
+        query:
+          - max($gc_pause) as gc_pause_max
+        columns:
+          gc_pause_max: { unit: nanoseconds }
+
+      - title: Number of completed garbage collection cycles
+        metrics:
+          - process_runtime_go_gc_count as $gc_count
+        query:
+          - per_min(sum($gc_count)) as gc_count
+
+      - title: Heap memory in use
+        metrics:
+          - process_runtime_go_mem_heap_inuse as $mem_in_use
+        query:
+          - sum($mem_in_use) as mem_in_use
+        columns:
+          mem_in_use: { unit: bytes }
+
+      - title: Bytes of allocated heap objects
+        metrics:
+          - process_runtime_go_mem_heap_alloc as $heap_alloc
+        query:
+          - sum($heap_alloc) as heap_alloc
+        columns:
+          heap_alloc: { unit: bytes }
+
+      - title: Bytes of heap memory obtained from the OS
+        metrics:
+          - process_runtime_go_mem_heap_sys as $heap_sys
+        query:
+          - sum($heap_sys) as heap_sys
+        columns:
+          heap_sys: { unit: bytes }
+
+      - title: Heap live objects
+        metrics:
+          - process_runtime_go_mem_heap_objects as $heap_objects
+        query:
+          - sum($heap_objects) as heap_objects
+
+      - title: Goroutines
+        metrics:
+          - process_runtime_go_goroutines as $goroutines
+        query:
+          - sum($goroutines)
+
+      - title: cgo calls
+        metrics:
+          - process_runtime_go_cgo_calls as $cgo_calls
+        query:
+          - per_min(sum(delta($cgo_calls))) as cgo_calls

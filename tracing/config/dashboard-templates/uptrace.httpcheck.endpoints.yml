@@ -1,0 +1,94 @@
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/httpcheckreceiver/metadata.yaml
+schema: v2
+name: 'HTTP Check endpoints'
+
+table:
+  grid_items:
+    - title: Successful checks
+      description: Number of successful check out of all check
+      type: gauge
+      template: ${num_up} out of ${num_all}
+      metrics:
+        - httpcheck_status as $status
+      query:
+        - uniq($status{http_response_status_class="2xx"}) as num_all
+        - uniq($status{http_response_status_class="2xx", _value=1}) as num_up
+
+  metrics:
+    - httpcheck_status as $status
+    - httpcheck_duration as $duration
+  query:
+    - group by url_full
+    - group by host_name
+    - sum($status{http_response_status_class="2xx"}) as status_2xx
+    - sum($status{http_response_status_class="2xx"}) / sum($status) as availability
+    - avg($duration)
+  columns:
+    availability: { unit: utilization, agg_func: avg }
+
+grid_rows:
+  - title: Gauges
+    items:
+      - title: Status
+        description: HTTP check status
+        type: gauge
+        metrics:
+          - httpcheck_status as $status
+        query:
+          - sum($status{http_response_status_class="2xx"})
+        value_mappings:
+          - op: gte
+            value: 1
+            text: UP
+            color: green
+          - op: eq
+            value: 0
+            text: DOWN
+            color: red
+          - op: any
+            text: UNKNOWN
+            color: gray
+      - title: Availability
+        description: HTTP endpoint availability
+        type: gauge
+        metrics:
+          - httpcheck_status as $status
+        query:
+          - sum($status{http_response_status_class="2xx"}) / sum($status) as availability
+        columns:
+          availability: { unit: utilization, agg_func: avg }
+
+  - title: General
+    items:
+      - title: HTTP check result
+        metrics:
+          - httpcheck_status as $status
+        query:
+          - $status group by http_response_status_code
+
+      - title: HTTP check duration
+        metrics:
+          - httpcheck_duration as $duration
+        query:
+          - avg($duration)
+
+      - title: HTTP check by host
+        type: table
+        metrics:
+          - httpcheck_status as $status
+        query:
+          - $status group by host_name
+
+monitors:
+  - name: HTTP check is down
+    metrics:
+      - httpcheck_status as $status
+    query:
+      - sum($status{http_response_status_class="2xx"}) as status_2xx
+      - group by url_full
+      - group by host_name
+    column: status_2xx
+    min_allowed_value: 1
+    max_allowed_value: 1
+    check_num_point: 1
+    null_points: allow

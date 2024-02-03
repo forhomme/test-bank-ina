@@ -1,0 +1,43 @@
+version: "3.9"
+services:
+#  app:
+#    build:
+#      dockerfile: Dockerfile
+#      context: .
+#    environment:
+#      PUSPEKNUBIKA_SQL_WRITE_HOST: "db"
+#    ports:
+#      - '8081:8081'
+#    depends_on:
+#      db:
+#        condition: service_started
+#    links:
+#      - db
+#    restart: on-failure
+#    networks:
+#      - backend
+
+  db:
+    image: mysql:latest
+    restart: on-failure
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "bank_ina"
+      MYSQL_USER: "app_user"
+      MYSQL_PASSWORD: "superuser"
+    ports:
+      - "3306:3306"
+    expose:
+      - '3306'
+    volumes:
+      - ~/data_ina:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+    external: true
+
+volumes:
+  db:
+    driver: local
