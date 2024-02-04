@@ -1,0 +1,809 @@
+basePath: /api
+definitions:
+  tasks.ListTask:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/tasks.TaskModel'
+        type: array
+    type: object
+  tasks.StatusType:
+    type: object
+  tasks.Task:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        $ref: '#/definitions/tasks.StatusType'
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  tasks.TaskModel:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - description
+    - status
+    - title
+    type: object
+  users.ListUsers:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/users.User'
+        type: array
+    type: object
+  users.Login:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  users.RefreshToken:
+    properties:
+      email:
+        type: string
+      refresh_token:
+        type: string
+    required:
+    - email
+    - refresh_token
+    type: object
+  users.Token:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  users.User:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+  utils.ErrorMessage:
+    properties:
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  utils.ResponseMessage:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Sample API for testing purpose
+  title: Bank INA API
+  version: v.0.0.1
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login User
+      parameters:
+      - description: Login Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/users.Token'
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: Login API
+      tags:
+      - users
+  /refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Refresh Token User
+      parameters:
+      - description: Login Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/users.Token'
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: RefreshToken API
+      tags:
+      - users
+  /task:
+    get:
+      consumes:
+      - application/json
+      description: List All Task
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/tasks.ListTask'
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: ListTask API
+      tags:
+      - tasks
+    post:
+      consumes:
+      - application/json
+      description: Insert New Task
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Task Data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: InsertTask API
+      tags:
+      - tasks
+  /task/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Task by Id
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: DeleteTask API
+      tags:
+      - tasks
+    get:
+      consumes:
+      - application/json
+      description: Get Task by Id
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/tasks.Task'
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: GetTask API
+      tags:
+      - tasks
+    put:
+      consumes:
+      - application/json
+      description: Update Task by Id
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Task Data
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/tasks.Task'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: UpdateTask API
+      tags:
+      - tasks
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: List All User
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/users.ListUsers'
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: ListUser API
+      tags:
+      - users
+    post:
+      consumes:
+      - application/json
+      description: Insert New User
+      parameters:
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: InsertUser API
+      tags:
+      - users
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete User by Id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: DeleteUser API
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Get User by Id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  $ref: '#/definitions/users.User'
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: GetUser API
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Update User by Id
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User Data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/users.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ResponseMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            allOf:
+            - $ref: '#/definitions/utils.ErrorMessage'
+            - properties:
+                data:
+                  type: object
+                message:
+                  type: string
+                status:
+                  type: integer
+              type: object
+      summary: UpdateUser API
+      tags:
+      - users
+swagger: "2.0"
