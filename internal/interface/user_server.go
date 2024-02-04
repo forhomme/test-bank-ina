@@ -21,6 +21,17 @@ func NewUserServer(tracer *telemetry.OtelSdk, app app.UserApplication) *userServ
 	return &userServer{tracer: tracer, app: app}
 }
 
+// InsertUser godoc
+// @Summary InsertUser API
+// @Description Insert New User
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body users.User true "User Data"
+// @Success 201 {object} utils.ResponseMessage{status=int,message=string,data=nil}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /user [post]
 func (u *userServer) InsertUser(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.insert_user")
 	defer span.End()
@@ -40,6 +51,16 @@ func (u *userServer) InsertUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, utils.ParseResponse(http.StatusCreated, "success", nil))
 }
 
+// ListUser godoc
+// @Summary ListUser API
+// @Description List All User
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=users.ListUsers}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /user [get]
 func (u *userServer) ListUser(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.list_user")
 	defer span.End()
@@ -53,6 +74,17 @@ func (u *userServer) ListUser(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", out))
 }
 
+// GetUser godoc
+// @Summary GetUser API
+// @Description Get User by Id
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int64 true "User ID"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=users.User}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /user/{id} [get]
 func (u *userServer) GetUser(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.get_user")
 	defer span.End()
@@ -69,6 +101,18 @@ func (u *userServer) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", out))
 }
 
+// UpdateUser godoc
+// @Summary UpdateUser API
+// @Description Update User by Id
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int64 true "User ID"
+// @Param user body users.User true "User Data"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=nil}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /user/{id} [put]
 func (u *userServer) UpdateUser(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.update_user")
 	defer span.End()
@@ -89,6 +133,17 @@ func (u *userServer) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", nil))
 }
 
+// DeleteUser godoc
+// @Summary DeleteUser API
+// @Description Delete User by Id
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path int64 true "User ID"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=nil}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /user/{id} [delete]
 func (u *userServer) DeleteUser(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.delete_user")
 	defer span.End()
@@ -105,6 +160,17 @@ func (u *userServer) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", nil))
 }
 
+// Login godoc
+// @Summary Login API
+// @Description Login User
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body users.Login true "Login Data"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=users.Token}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /login [post]
 func (u *userServer) Login(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.login")
 	defer span.End()
@@ -124,6 +190,17 @@ func (u *userServer) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", out))
 }
 
+// RefreshToken godoc
+// @Summary RefreshToken API
+// @Description Refresh Token User
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body users.RefreshToken true "Login Data"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=users.Token}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /refresh-token [post]
 func (u *userServer) RefreshToken(c *gin.Context) {
 	ctx, span := u.tracer.Tracer.Start(c.Request.Context(), "http.refresh_token")
 	defer span.End()

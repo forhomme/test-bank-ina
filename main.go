@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
 	"syscall"
 	"test_ina_bank/config"
+	_ "test_ina_bank/docs"
 	_interface "test_ina_bank/internal/interface"
 	"test_ina_bank/internal/service"
 	"test_ina_bank/pkg/baselogger"
@@ -23,6 +26,11 @@ const (
 	DBInitFile = "./migration/init.sql"
 )
 
+// @title Bank INA API
+// @version v.0.0.1
+// @description Sample API for testing purpose
+// @host localhost:8080
+// @BasePath /api
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -72,6 +80,8 @@ func main() {
 	taskRoute.PUT("/:id", taskServer.UpdateTask)
 	taskRoute.DELETE("/:id", taskServer.DeleteTask)
 
+	// swagger
+	route.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	srv := &http.Server{
 		Addr:    fmt.Sprintf(":%d", config.Config.Server.Port),
 		Handler: route,

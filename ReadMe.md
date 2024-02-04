@@ -40,3 +40,22 @@ Run main file
   go run main.go
 ```
 
+## Swagger Open API
+
+Install Swag/Swaggo
+
+```bash
+  go install github.com/swaggo/swag/cmd/swag@latest
+```
+
+Update Swag docs
+
+```bash
+  swag init
+```
+
+Run the application and open swagger UI
+
+```bash
+  http://localhost:8080/swagger/index.html
+```

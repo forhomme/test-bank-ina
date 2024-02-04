@@ -15,6 +15,7 @@ WORKDIR /app
 COPY --from=builder /usr/app/go/test-bank-ina /app/
 COPY --from=builder /usr/app/go/config/config.yaml /app/config
 COPY --from=builder /usr/app/go/migration/ /app/migration
+COPY --from=builder /usr/app/go/docs/ /app/docs
 
 RUN apt-get update && apt-get upgrade -y && apt-get install tzdata ca-certificates -y
 ENV TZ="Asia/Singapore"

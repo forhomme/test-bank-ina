@@ -24,6 +24,18 @@ func NewTaskServer(tracer *telemetry.OtelSdk, app app.TaskApplication) *taskServ
 	return &taskServer{tracer: tracer, app: app}
 }
 
+// InsertTask godoc
+// @Summary InsertTask API
+// @Description Insert New Task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Param task body tasks.Task true "Task Data"
+// @Success 201 {object} utils.ResponseMessage{status=int,message=string,data=nil}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /task [post]
 func (t *taskServer) InsertTask(c *gin.Context) {
 	ctx, span := t.tracer.Tracer.Start(c.Request.Context(), "http.insert_task")
 	defer span.End()
@@ -63,6 +75,17 @@ func (t *taskServer) InsertTask(c *gin.Context) {
 	c.JSON(http.StatusCreated, utils.ParseResponse(http.StatusCreated, "success", nil))
 }
 
+// ListTask godoc
+// @Summary ListTask API
+// @Description List All Task
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=tasks.ListTask}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /task [get]
 func (t *taskServer) ListTask(c *gin.Context) {
 	ctx, span := t.tracer.Tracer.Start(c.Request.Context(), "http.list_task")
 	defer span.End()
@@ -76,6 +99,18 @@ func (t *taskServer) ListTask(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", out))
 }
 
+// GetTask godoc
+// @Summary GetTask API
+// @Description Get Task by Id
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Param id path int64 true "Task ID"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=tasks.Task}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /task/{id} [get]
 func (t *taskServer) GetTask(c *gin.Context) {
 	ctx, span := t.tracer.Tracer.Start(c.Request.Context(), "http.get_task")
 	defer span.End()
@@ -92,6 +127,19 @@ func (t *taskServer) GetTask(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", out))
 }
 
+// UpdateTask godoc
+// @Summary UpdateTask API
+// @Description Update Task by Id
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Param id path int64 true "Task ID"
+// @Param task body tasks.Task true "Task Data"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=nil}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /task/{id} [put]
 func (t *taskServer) UpdateTask(c *gin.Context) {
 	ctx, span := t.tracer.Tracer.Start(c.Request.Context(), "http.update_task")
 	defer span.End()
@@ -130,6 +178,18 @@ func (t *taskServer) UpdateTask(c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ParseResponse(http.StatusOK, "success", nil))
 }
 
+// DeleteTask godoc
+// @Summary DeleteTask API
+// @Description Delete Task by Id
+// @Tags tasks
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer token"
+// @Param id path int64 true "Task ID"
+// @Success 200 {object} utils.ResponseMessage{status=int,message=string,data=nil}
+// @Failure 400 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Failure 500 {object} utils.ErrorMessage{status=int,message=string,data=nil}
+// @Router /task/{id} [delete]
 func (t *taskServer) DeleteTask(c *gin.Context) {
 	ctx, span := t.tracer.Tracer.Start(c.Request.Context(), "http.delete_task")
 	defer span.End()
