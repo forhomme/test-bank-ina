@@ -5,7 +5,10 @@ services:
 #      dockerfile: Dockerfile
 #      context: .
 #    environment:
-#      BANK_INA_SQL_WRITE_HOST: "db"
+#      DATABASE_HOST: "db"
+#      DATABASE_NAME: "bank_ina"
+#      DATABASE_USER: "app_user"
+#      DATABASE_PASSWORD: "superuser"
 #    ports:
 #      - '8080:8080'
 #    depends_on:

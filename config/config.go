@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"gopkg.in/yaml.v3"
+	"os"
 	"sync"
 	"test_ina_bank/pkg/baselogger"
 	"time"
@@ -71,6 +72,7 @@ func InitConfig(ctx context.Context, log *baselogger.Logger) {
 	if err != nil {
 		log.Fatal("error when unmarshal config: ", err)
 	}
+	Config.SetDefault()
 }
 
 func (c *Cfg) Reload(ctx context.Context, log *baselogger.Logger) {
@@ -78,4 +80,19 @@ func (c *Cfg) Reload(ctx context.Context, log *baselogger.Logger) {
 	defer c.mutex.RUnlock()
 
 	InitConfig(ctx, log)
+}
+
+func (c *Cfg) SetDefault() {
+	if os.Getenv("DATABASE_HOST") != "" {
+		c.Database.Host = os.Getenv("DATABASE_HOST")
+	}
+	if os.Getenv("DATABASE_NAME") != "" {
+		c.Database.DbName = os.Getenv("DATABASE_NAME")
+	}
+	if os.Getenv("DATABASE_USER") != "" {
+		c.Database.User = os.Getenv("DATABASE_USER")
+	}
+	if os.Getenv("DATABASE_PASSWORD") != "" {
+		c.Database.Password = os.Getenv("DATABASE_PASSWORD")
+	}
 }
